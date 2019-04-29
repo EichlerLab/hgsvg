@@ -2,7 +2,6 @@
 
 import networkx as nx
 import sys
-import Queue
 import argparse
 import Overlap
 #import IPython
@@ -184,7 +183,7 @@ def GreedyPath(g,n,o):
             foundOverlap = True
         if foundOverlap == True:
             path.append(n)
-	    foundOverlap = False
+            foundOverlap = False
         else:
             print("ending search " + str(len(adj)))
         prevOverlap = curOverlap

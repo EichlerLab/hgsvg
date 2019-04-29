@@ -50,7 +50,8 @@ def Run(files):
 fileList = []
 
 for contig in SeqIO.parse(contigFile, "fasta"):
-    queryTempFile = tempfile.NamedTemporaryFile(suffix=".fasta", dir=args.tmpdir, delete=False)
+    queryTempFile = tempfile.NamedTemporaryFile(suffix=".fasta", dir=args.tmpdir, delete=False, mode='w')
+    sys.stderr.write("writing " + str(contig) + "\n")
     SeqIO.write(contig, queryTempFile, "fasta")
     queryTempFile.close()
     
@@ -60,7 +61,7 @@ for contig in SeqIO.parse(contigFile, "fasta"):
     refEnd   = int(vals[-1])
     
     seq = ref.fetch(reference=chrom, start=refStart, end=refEnd)
-    refTempFile = tempfile.NamedTemporaryFile(suffix=".fasta", dir=args.tmpdir, delete=False)
+    refTempFile = tempfile.NamedTemporaryFile(suffix=".fasta", dir=args.tmpdir, delete=False, mode='w')
     refTempFile.write(">ref\n")
     refTempFile.write(seq+"\n")
     refTempFile.close()

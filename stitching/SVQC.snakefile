@@ -3,7 +3,7 @@ import os
 
 shell.prefix("source ./config.sh; ")
 
-localrules: all
+#localrules: all
 
 #
 # Init
@@ -254,12 +254,9 @@ rule SplitGaps:
         sd=SNAKEMAKE_DIR,
         gd=gapdir
     shell:
-        """mkdir -p {params.gd}/hap{wildcards.hap}/split; """
-        """{params.sd}/RecallRegionsInGapBed.py --asm {input.asm} """
-            """--ref {params.ref} """
-            """--gaps {input.gaps} """
-            """--split {params.n} """
-            """--splitDir {params.gd}/hap{wildcards.hap}/split"""
+        """mkdir -p {params.gd}/hap{wildcards.hap}/split;
+        {params.sd}/RecallRegionsInGapBed.py --asm {input.asm} --ref {params.ref} --gaps {input.gaps} --split {params.n}  --splitDir {params.gd}/hap{wildcards.hap}/split"""
+
 
 rule RecallGaps:
     input:
@@ -285,7 +282,7 @@ rule RecallGaps:
                 """{params.gapdir}/hap{wildcards.hap}/split/regions.recalled.ref.{wildcards.id} """
                 """--ngmlr {params.ngmlr_cutoff} """
                 """--indels {output.recalled}.indel.bed --indelDir {params.gapdir}/hap{wildcards.hap}/indels """
-                """--blasr {params.sd}/../blasr/alignment/bin/blasr; """
+                """--blasr {params.sd}/../../dep/bin/blasrmc; """
         """ else """
             """echo "Skip recall..."; """
             """cp {input.gaps} {output.recalled}; """
@@ -365,13 +362,13 @@ rule SplicedPBSupport:
 bedtools sort -header -i {input.gaps} > {input.gaps}.tmp
 mv -f {input.gaps}.tmp {input.gaps}
 mkdir -p {params.gapdir}/hap{wildcards.hap};
-{params.sd}/../sv/utils/SpliceVariantsAndCoverageValidate.py --gaps {input.gaps} --ref {params.ref} --reads {params.bams} --window 1000 --flank 2000 --out {output.pbSupport} --nproc 1 --blasr {params.sd}/../blasr/alignment/bin/blasr 
+{params.sd}/../sv/utils/SpliceVariantsAndCoverageValidate.py --gaps {input.gaps} --ref {params.ref} --reads {params.bams} --window 1000 --flank 2000 --out {output.pbSupport} --nproc 1 --blasr {params.sd}/../../dep/bin/blasrmc
 """        
 
 rule AddSplicedPBSupport:
     input:
         sup=gapdir+"/hap{hap}/split/gaps.recalled_support.{id}",
-        gaps=gapdir+"/hap{hap}/split/gaps.recalled.{id}"        
+        gaps=gapdir+"/hap{hap}/split/gaps.recalled.{id}"
     params:
         grid_opts=config["grid_manycore"],
         ref=config["ref"],
@@ -383,9 +380,9 @@ rule AddSplicedPBSupport:
 
 rule MergeRecallGaps:
     input:
-        gaps=expand(gapdir+"/hap{{hap}}/split/gaps.gaps_recalled_support.{id}", id=range(config['recall_bin'])),
-        refRegions=expand(gapdir+"/hap{{hap}}/split/regions.recalled.ref.{id}", id=range(config['recall_bin']))
-#        gaps=dynamic(gapdir+"/hap{hap}/split/gaps.gaps_recalled_support.{id}"),
+#        gaps=expand(gapdir+"/hap{{hap}}/split/gaps.gaps_recalled_support.{id}", id=range(config['recall_bin'])),
+#        refRegions=expand(gapdir+"/hap{{hap}}/split/regions.recalled.ref.{id}", id=range(config['recall_bin']))
+        gaps=dynamic(gapdir+"/hap{hap}/split/gaps.gaps_recalled_support.{id}"),
 #        refRegions=dynamic(gapdir+"/hap{hap}/split/regions.recalled.ref.{id}")
     output:
         recalled=gapdir+"/hap{hap}/gaps.recalled",
@@ -399,7 +396,7 @@ rule MergeRecallGaps:
         """head -1 {params.gapdir}/hap{wildcards.hap}/split/gaps.gaps_recalled_support.0 | """
         """tr -d "#" | awk '{{ print "#"$0; }}'> {output.recalled}; """
         """cat {input.gaps} | grep -v "^#" | bedtools sort >> {output.recalled}; """
-        """cat {input.refRegions} > {output.recalledRegions}; """
+        """cat {params.gapdir}/hap{wildcards.hap}/split/regions.recalled.ref.* > {output.recalledRegions}; """
         """nRecalled=`wc -l {output.recalled} | awk '{{ print $1;}}'`; """
         """if [ $nRecalled -eq 1 ]; then """
             """echo "ERROR. There were no SVs detected in {output.recalled}. There are several ways "; """
@@ -749,7 +746,7 @@ rule NormIndelVCF:
         grid_opts=config["grid_small"],
         ref=config["ref"],
     shell:"""
-vt normalize -r {params.ref} -o {output.normVCF} {input.rawVCF}
+vt normalize -n -r {params.ref} -o {output.normVCF} {input.rawVCF}
 """
 
 rule NormIndelVCFToBed:
@@ -1038,7 +1035,7 @@ rule FillInSupport:
         sd=SNAKEMAKE_DIR
     shell:
         """{params.sd}/../sv/utils/SpliceVariantsAndCoverageValidate.py """
-            """--blasr {params.sd}/../blasr/alignment/bin/blasr """
+            """--blasr {params.sd}/../../dep/bin/blasrmc """
             """--gaps {input.fillIn} """
             """--ref {params.ref} """
             """--reads {params.bams} """
@@ -1046,7 +1043,7 @@ rule FillInSupport:
             """--flank 1000 """
             """--out {output.fillInCov} """
             """--nproc 1 """
-            """--blasr {params.sd}/../blasr/alignment/bin/blasr"""
+            """--blasr {params.sd}/../../dep/bin/blasrmc"""
 
 
 

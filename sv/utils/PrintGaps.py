@@ -188,9 +188,9 @@ for samFileName in args.sam:
         if (aln.title is None):
             sys.stderr.write("no title.\n")
             continue
-	#
-	# Use 0-based coordinate system
-	#
+        #
+        # Use 0-based coordinate system
+        #
         aln.tStart -=1
         aln.tEnd -=1
         if (args.onTarget == True):
@@ -463,14 +463,14 @@ for samFileName in args.sam:
                         doPrint = False
 
                     hpStart = qPos
-		    hpEnd   = qPos
-		    while hpStart > 0 and aln.seq[hpStart] == aln.seq[qPos]:
-			hpStart-=1
-		    while hpEnd < len(aln.seq) and aln.seq[hpEnd] == aln.seq[qPos]:
-			hpEnd+=1
-		    hpLen = hpEnd - hpStart
-		    homopolymer = False
-		    if args.ignoreHP is not None and hpLen <= args.ignoreHP and gapSeq.count(gapSeq[0]) == len(gapSeq):
+                    hpEnd   = qPos
+                    while hpStart > 0 and aln.seq[hpStart] == aln.seq[qPos]:
+                        hpStart-=1
+                    while hpEnd < len(aln.seq) and aln.seq[hpEnd] == aln.seq[qPos]:
+                        hpEnd+=1
+                    hpLen = hpEnd - hpStart
+                    homopolymer = False
+                    if args.ignoreHP is not None and hpLen <= args.ignoreHP and gapSeq.count(gapSeq[0]) == len(gapSeq):
                         doPrint = False
 
                     if args.ignoreHP is not None and gapSeq.count(gapSeq[0]) == len(gapSeq):
@@ -499,12 +499,12 @@ for samFileName in args.sam:
                         if (args.printLength):
                             outFile.write("\t{}".format(aln.seq))
 
-			if args.fractionMasked is True:
-			    nMasked = gapSeq.count('N')
-			    frac = '0'
+                        if args.fractionMasked is True:
+                            nMasked = gapSeq.count('N')
+                            frac = '0'
                             if len(gapSeq) > 0:
-				frac = "{:2.2f}".format(float(nMasked)/len(gapSeq))
-			    outFile.write("\t" + frac)
+                                frac = "{:2.2f}".format(float(nMasked)/len(gapSeq))
+                            outFile.write("\t" + frac)
                         outFile.write("\n")
                         #
                         # Write out distance to closest side of contig if specifiedd
@@ -539,13 +539,13 @@ for samFileName in args.sam:
 
 
                     hpStart = qPos
-		    hpEnd   = qPos
-		    while hpStart > 0 and aln.seq[hpStart] == aln.seq[qPos]:
-			hpStart-=1
-		    while hpEnd < len(aln.seq) and aln.seq[hpEnd] == aln.seq[qPos]:
-			hpEnd+=1
-		    hpLen = hpEnd - hpStart
-		    if args.ignoreHP is not None and hpLen > args.ignoreHP and delSeq.count(delSeq[0]) == len(delSeq):
+                    hpEnd   = qPos
+                    while hpStart > 0 and aln.seq[hpStart] == aln.seq[qPos]:
+                        hpStart-=1
+                    while hpEnd < len(aln.seq) and aln.seq[hpEnd] == aln.seq[qPos]:
+                        hpEnd+=1
+                    hpLen = hpEnd - hpStart
+                    if args.ignoreHP is not None and hpLen > args.ignoreHP and delSeq.count(delSeq[0]) == len(delSeq):
                         doPrint = False
 
                     if args.ignoreHP is not None and delSeq.count(delSeq[0]) == len(delSeq):
@@ -571,11 +571,11 @@ for samFileName in args.sam:
                             outFile.write("\t{}".format(homopolymer))
 
                         if args.fractionMasked is True:
-			    nMasked = delSeq.count('N')
-			    frac = '0'
+                            nMasked = delSeq.count('N')
+                            frac = '0'
                             if len(delSeq) > 0:
-				frac = "{:2.2f}".format(float(nMasked)/len(delSeq))
-			    outFile.write("\t" + frac)
+                                frac = "{:2.2f}".format(float(nMasked)/len(delSeq))
+                            outFile.write("\t" + frac)
 
                       
                         outFile.write("\n")

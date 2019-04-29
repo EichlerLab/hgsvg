@@ -274,7 +274,7 @@ rule NormIndelVCF:
         grid_opts=config["grid_small"],
         ref=config["ref"],
     shell:
-        """vt normalize -r {params.ref} -o {output.indelNormVCF} {input.indelVCF}"""
+        """vt normalize -n -r {params.ref} -o {output.indelNormVCF} {input.indelVCF}"""
 
 rule NormIndelVCFToBed:
     input:
@@ -343,7 +343,7 @@ rule MakeAsmAln:
             # Fetch and write header
             samtools_stdout = subprocess.run(
                 [
-                    '/net/eichler/vol27/projects/structural_variation/nobackups/tools/phasedsv/201904/dep/build/envs/tools/bin/samtools',
+                    'samtools',
                     'view',
                     '-H',
                     'alignments.h0.bam'

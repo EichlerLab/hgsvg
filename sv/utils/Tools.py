@@ -358,8 +358,8 @@ def ExtractSeq(region, seqFile, fai):
     seqLength  = fai[region[0]][2]
     lineLength = fai[region[0]][3]
 
-    startLine, startLinePos = region[1] / seqLength, region[1] % seqLength
-    endLine, endLinePos = region[2] / seqLength, region[2] % seqLength
+    startLine, startLinePos = region[1] // seqLength, region[1] % seqLength
+    endLine, endLinePos = region[2] // seqLength, region[2] % seqLength
 
     startFilePos = chrStart + startLine * lineLength + startLinePos
     endFilePos   = chrStart + endLine * lineLength  + endLinePos
