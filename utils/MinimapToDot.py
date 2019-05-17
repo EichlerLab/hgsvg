@@ -8,5 +8,5 @@ for line in sys.stdin:
 	strand = 0
     else:
 	strand  = 1
-    print "{}\t{}\t{}\t{}\t{}".format(v[2],v[7], int(v[3]) - int(v[2]), strand, 0)
+    print("{}\t{}\t{}\t{}\t{}".format(v[2],v[7], int(v[3]) - int(v[2]), strand, 0))
     

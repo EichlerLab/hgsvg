@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 samFile=$1
 dotsFile=$2
 gapsFile=$3

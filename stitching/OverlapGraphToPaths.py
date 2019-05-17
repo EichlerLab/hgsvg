@@ -1,7 +1,7 @@
 #!/usr/bin/env python
+
 import networkx as nx
 import sys
-import Queue
 import argparse
 import Overlap
 #import IPython
@@ -66,7 +66,7 @@ def RemoveTips(g,l):
                     dest = destOut
 
     g.remove_nodes_from(toRemove)
-    print "removed " + str(len(toRemove)) + " tips"
+    print("removed {} tips".format(len(toRemove)))
     return nTips
 
 def SoleOut(g,n):
@@ -113,14 +113,14 @@ def RemoveSimpleBulges(g, maxBulgeLength):
     for source in forkNodes:
         dests = g[source].keys()
         if len(dests) != 2:
-            print "ERROR, should be on a branch"
+            print("ERROR, should be on a branch")
         paths = [PathToBranch(g, (source, dest)) for dest in dests]
         if paths[0][-1] != paths[1][-1]:
-            print "Path from " + source + " is not a bulge, " + str(len(paths[0])) + "\t" + str(len(paths[1]))
+            print("Path from " + source + " is not a bulge, " + str(len(paths[0])) + "\t" + str(len(paths[1])))
             continue
-        print "Paths: "
-        print str(paths[0])
-        print str(paths[1])
+        print("Paths: ")
+        print(str(paths[0]))
+        print(str(paths[1]))
 
 def DFSOverlaps(g,n,o,c,d, prevOverlap=None):
     adj = OrderDestByOverlap(n, g, o, extend=True)
@@ -183,16 +183,16 @@ def GreedyPath(g,n,o):
             foundOverlap = True
         if foundOverlap == True:
             path.append(n)
-	    foundOverlap = False
+            foundOverlap = False
         else:
-            print "ending search " + str(len(adj))
+            print("ending search " + str(len(adj)))
         prevOverlap = curOverlap
     if foundOverlap == True:
         path.append(n)
     # Mark last node as visited
     g.node[n]['visited'] = True
 
-    print "Path length: " + str(len(path)) + " Ended at: " + path[-1]
+    print("Path length: " + str(len(path)) + " Ended at: " + path[-1])
     return path
 
 import pdb
@@ -238,8 +238,8 @@ def LongestPath(g):
             longestPathStart = n
             longestPathLength = lp[n]
     path = StoreLongestPath(g, longestPathStart, lp, lpd)
-#    print "Stored longest path " + str(longestPathLength) + " stored " + str(len(path))
-#    print path
+#    print("Stored longest path " + str(longestPathLength) + " stored " + str(len(path)))
+#    print(path)
     return path
         
     
@@ -269,7 +269,7 @@ def LinearPaths(g):
 
         while len(branchStack) > 0:
             (node, index) = branchStack.pop()
-            print "Branching - node: {}, index: {}, cur path: {}".format(node, index, len(path))
+            print("Branching - node: {}, index: {}, cur path: {}".format(node, index, len(path)))
             path = path[0:index]
             path.append(node)
             g.node[node]['visited'] = True
@@ -297,7 +297,7 @@ def LinearPaths(g):
             if g.out_degree(node) == 0:
                 if len(path) > len(optPath):
                     optPath = path
-        print "source: " + src + " has path of length " + str(len(optPath))
+        print("source: " + src + " has path of length " + str(len(optPath)))
         optPaths.append(optPath)
     return optPaths
 

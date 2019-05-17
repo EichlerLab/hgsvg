@@ -32,7 +32,7 @@ def GetSV(info):
     elif (svtype == "inversion"):
         svop = "inversion"
     else:
-        print "ERROR. SV type must be either DEL,DUP,or INS, got " + svtype
+        print("ERROR. SV type must be either DEL,DUP,or INS, got " + svtype)
         sys.exit(1)
     return (svop, svlen)
 
@@ -43,7 +43,7 @@ for line in vcf:
         cols=line[1:].split()
         colIdx = { cols[i]: i for i in range(0,len(cols)) }
         if ("INFO" not in colIdx):
-            print "Input vcf requires INFO field."
+            print("Input vcf requires INFO field.")
             sys.exit(1)
         infoIdx = colIdx["INFO"]
         continue

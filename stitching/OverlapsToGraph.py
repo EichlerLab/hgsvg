@@ -26,17 +26,17 @@ ovpIndex = 0
 t='chr5:149787757-149867757/0'
 for ovp in overlaps:
     if ovp.a == t:
-        print "src: " + t
+        print("src: " + t)
     if ovp.OverlapLength() > 0 and \
        ovp.Contained() == False and \
        ovp.Extends(wiggle=1000) == True and \
        (args.maxIndel == None or ovp.indel <= args.maxIndel):
         g.add_edge(ovp.a, ovp.b, index=ovpIndex)
         if ovp.a == t:
-            print t + " overlaps " + ovp.b
+            print(t + " overlaps " + ovp.b)
     else:
         if ovp.a == t:
-            print t + " not overlaps " + ovp.b
+            print(t + " not overlaps " + ovp.b)
                 
     ovpIndex+=1
 

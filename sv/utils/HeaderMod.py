@@ -27,6 +27,4 @@ for inFileName in args.source:
     
     index +=1
 header += args.append
-print "#"+ "\t".join(header)
-    
-        
+print("#"+ "\t".join(header))

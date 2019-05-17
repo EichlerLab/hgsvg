@@ -40,7 +40,7 @@ for line in vcf:
                 elif vals[i] == args.ch:
                     ich = i
             if ifa == 0 or imo == 0 or ich == 0:
-                print "Did not find a sample "
+                print("Did not find a sample ")
                 sys.exit(0)
             continue
         else:

@@ -28,6 +28,7 @@ def GetSeq(name, ref, tempFile):
     sys.stderr.write("Grabbing " + ref + "'" + name + "'\n")
 
     faidx = "samtools faidx {} {}".format(ref, name)
+    sys.stderr.write(faidx + "\n")
     p = subprocess.Popen(faidx.split(), stdout=tempFile)
     p.wait()
     sys.stderr.write("done\n")

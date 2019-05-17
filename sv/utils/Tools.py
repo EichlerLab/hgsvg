@@ -102,8 +102,8 @@ def SAMToAccuracy(cigar, readseq, refseq):
         if (cigar[i][0] == 0):
             for j in range(0,cigar[i][1]):
                 if (t >= len(refseq) or q >= len(readseq)):
-                    print "ERROR at " + "\t".join([str(j) for j in [t, len(refseq), q, len(readseq), i, len(cigar)]])
-                    print cigar
+                    print("ERROR at " + "\t".join([str(j) for j in [t, len(refseq), q, len(readseq), i, len(cigar)]]))
+                    print(cigar)
                 if (refseq[t] == readseq[q]):
                     nMatch+=1
                 else:
@@ -218,10 +218,10 @@ def ParseSamLine(line):
         
         tLen = int(vals[8])
     except:
-        print "Error parsing"
-        print line
+        print("Error parsing")
+        print(line)
         vals = line.split()
-        print len(vals)
+        print(len(vals))
         sys.exit(0)
         return None
         
@@ -240,7 +240,7 @@ def BuildAlignOpStrings(ops, lengths, qPos, tPos, qSeq):
 
             for j in range(0,lengths[i]):
                 if (qPos >= len(qSeq)):
-                    print "error at " + str(i)  + " of " + str(len(ops))
+                    print("error at " + str(i)  + " of " + str(len(ops)))
                     continue
                     
                 qStr += qSeq[qPos]
@@ -250,7 +250,7 @@ def BuildAlignOpStrings(ops, lengths, qPos, tPos, qSeq):
         elif (ops[i] == "I"):
             for j in range(0,lengths[i]):
                 if (qPos >= len(qSeq)):
-                    print "insertion error at " + str(i) + " of " + str(len(ops))
+                    print("insertion error at " + str(i) + " of " + str(len(ops)))
                 qStr += qSeq[qPos]
                 tStr += "-"
                 qPos += 1
@@ -352,14 +352,14 @@ def AddSlop(region, fai, slop):
 
 def ExtractSeq(region, seqFile, fai):
     if (region[0] not in fai):
-        print region[0] + " missing from index file."
+        print(region[0] + " missing from index file.")
         sys.exit(0)
     chrStart   = fai[region[0]][1]
     seqLength  = fai[region[0]][2]
     lineLength = fai[region[0]][3]
 
-    startLine, startLinePos = region[1] / seqLength, region[1] % seqLength
-    endLine, endLinePos = region[2] / seqLength, region[2] % seqLength
+    startLine, startLinePos = region[1] // seqLength, region[1] % seqLength
+    endLine, endLinePos = region[2] // seqLength, region[2] % seqLength
 
     startFilePos = chrStart + startLine * lineLength + startLinePos
     endFilePos   = chrStart + endLine * lineLength  + endLinePos

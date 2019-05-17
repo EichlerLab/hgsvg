@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 /bin/rm -f unaligned.fofn
 mkdir -p unaligned
 for f in `cat $1`; do

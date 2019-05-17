@@ -14,6 +14,7 @@ from multiprocessing import Process, Lock, Semaphore, Pool
 import re
 import os
 import sys
+import codecs
 
 ap = argparse.ArgumentParser(description="Given a gaps.bed file, splice variants into the reference, remap reads to this, and count gaps. ")
 ap.add_argument("--gaps",   help="Gaps file (can be insertions and deletions).", required=True)
@@ -58,7 +59,7 @@ def WaitOnFile(fn):
     cmd=["lsof",fn]
     while True:
         res=subprocess.Popen(cmd, stdout=subprocess.PIPE)
-        l=res.stdout.read()
+        l=codecs.latin_1_decode(res.stdout.read())[0]
         res.wait()
         if l == '':
             return
@@ -533,7 +534,7 @@ def SpliceTestLine(svs):
     rs=0
     if coverage < args.maxCoverage:
         proc=subprocess.Popen(dbCommand.split(),stderr=dn,stdout=subprocess.PIPE)
-        alnLines=proc.stdout.read()
+        alnLines=codecs.latin_1_decode(proc.stdout.read())[0]
         proc.wait()
         dbsFile.close()
 #        WaitOnFile(dbsFile.name)

@@ -71,7 +71,7 @@ def GetSeq(val):
         return val
 
 def GetAltSeq(row, genome):
-    seq = GetSeq(row["svSeq"])
+    seq = GetSeq(row["svSeq"]).upper()
     if row["svType"] == "insertion":
         refPrefix = genome.fetch(row["#chrom"], row["origTStart"]-1, row["origTStart"]).upper()
         return refPrefix + seq.upper()
@@ -88,7 +88,7 @@ def ParseSVLen(val):
         except:
             import pdb
             pdb.set_trace()
-            print val
+            print(val)
             
         return abs(int(val))
     
@@ -105,7 +105,7 @@ def GetSVLen(row):
     if retval is None or retval == "":
         import pdb
         pdb.set_trace()
-        print row["svType"]
+        print(row["svType"])
     return retval
 
 def GetRefSeq(row, genome, oneBase=False):
@@ -120,7 +120,7 @@ def GetRefSeq(row, genome, oneBase=False):
     refPos-=1
 
     seq = genome.fetch(row["#chrom"], refPos, refPos + refLen).upper()
-    return seq
+    return seq.upper()
 
 
 
@@ -272,12 +272,14 @@ def convert_bed_to_vcf(bed_filename, reference_filename, vcf_filename, sample, v
         vcf.write('##INFO=<ID=CONTIG_START,Number=1,Type=Integer,Description="Start coordinate of this variant in the alternate assembly contig">' + "\n")
         vcf.write('##INFO=<ID=CONTIG_END,Number=1,Type=Integer,Description="End coordinate of this variant in the alternate assembly contig">' + "\n")
         vcf.write('##INFO=<ID=SEQ,Number=1,Type=String,Description="Sequence associated with variant">' + "\n")
+        vcf.write('##INFO=<ID=SAMPLES,Number=1,Type=String,Description="Sample associated with variant">' + "\n")
         for i in range(0,len(fai)):
             vcf.write("##contig=<ID={},length={}>".format(fai[i][0], fai[i][1]) + "\n")
         vcf.write("##SAMPLE=<ID={}>\n".format(args.sample))
         vcf.write('##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">' + "\n")
         if args.info is not None:
             vcf.write("\n".join(args.info)+"\n")
+        vcf.flush()
         simple_calls.to_csv(vcf, sep="\t", index=False)
 
 

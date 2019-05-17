@@ -8,7 +8,7 @@ from Bio import Seq
 from Bio import SeqIO
 from Bio import SeqRecord
 if (len(sys.argv) < 6):
-    print "usage DotPlotOnSam.py samFile chrom start end ref "
+    print("usage DotPlotOnSam.py samFile chrom start end ref ")
     sys.exit(0)
     
 samFile = open(sys.argv[1])
@@ -67,9 +67,9 @@ for line in samFile:
     qStart=max(0,soft+qOffset-l)
     qEnd  = min(len(query), soft+qOffset+3*l)
     qSeq = query[qStart:qEnd]
-    print qOffset
-    print l
-    print str(qStart) + "\t" + str(qEnd)
+    print(qOffset)
+    print(l)
+    print(str(qStart) + "\t" + str(qEnd))
     rec = SeqRecord.SeqRecord(Seq.Seq(qSeq), id="Inversion", name="", description="")
     tempInv= open("tmp.inv.fasta", 'w')
     SeqIO.write(rec, tempInv, "fasta")

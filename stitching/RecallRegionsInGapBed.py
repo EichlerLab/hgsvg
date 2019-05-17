@@ -243,6 +243,8 @@ def Run(command):
     return res.rstrip()
 
 alns=[]
+import codecs
+
 if args.nproc > 1:
     pool = Pool(args.nproc)
 
@@ -251,26 +253,30 @@ if args.nproc > 1:
 
     for a in aln:
         if len(a) > 0 and a != "\n":
-            alns.append(a)
+            alns.append(codecs.latin_1_decode(a)[0])
 else:
     for c in recallCommands:
         aln = Run(c)
         if aln != "\n":
-            alns += aln.split("\n")
+            alns += codecs.latin_1_decode(aln)[0].split("\n")
             
 oneHeader = []
 first=True
 outFile.write(headerLine+"\trecMethod\n")
+#import pdb
 for a in range(0, len(alns)):
 #    alnRows = alns[a].split('\n')
     aln = alns[a]
     if first and len(aln) > 0 and len(aln) > 0 and aln[0] == "#":
+#        pdb.set_trace()
         oneHeader.append(aln)
         first = False
     else:
         if len(aln) > 0 and aln[0] != '#':
+#            pdb.set_trace()
             oneHeader.append(aln)
 
-
+#import pdb
+#pdb.set_trace()
 outFile.write("\n".join(oneHeader)+"\n")
     

@@ -30,7 +30,6 @@ callFile = open(args.calls)
 readsFofn = open(args.fofn)
 blines = readsFofn.readlines()
 bamFiles = [pysam.AlignmentFile(bline.rstrip(), 'rb') for bline in blines]
-print blines
 bamFileIndex = {}
 
 
@@ -132,7 +131,7 @@ def ProcessLine(line):
                 else:
                     return 0
             else:
-                print "ERROR WITH READ DEPTH"
+                print("ERROR WITH READ DEPTH")
                 sys.exit(1)
             
     avg = 0

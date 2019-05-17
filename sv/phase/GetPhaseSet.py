@@ -22,7 +22,7 @@ for line in sys.stdin:
                 ps=vals[psi]
 
         if ps is not None:
-            print v[0] + "\t" + v[1] + "\t" + ps
+            print(v[0] + "\t" + v[1] + "\t" + ps)
 
 if ps is not None:
-    print v[0] + "\t" + v[1] + "\t" + ps        
+    print(v[0] + "\t" + v[1] + "\t" + ps)

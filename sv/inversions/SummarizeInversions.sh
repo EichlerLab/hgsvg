@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
 bedtools sort -i inversions.h0.bed | bedtools merge > inversions.h0.merged.bed
 bedtools sort -i inversions.h1.bed | bedtools merge > inversions.h1.merged.bed
 

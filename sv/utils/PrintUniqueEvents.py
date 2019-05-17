@@ -88,6 +88,6 @@ for line in inFile:
         else:
             doPrint = True
     if (doPrint):
-        print line.strip()
+        print(line.strip())
     elif (remainder is not None):
         remainder.write(line)

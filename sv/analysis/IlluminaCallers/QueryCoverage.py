@@ -60,17 +60,17 @@ def ProcessRegion(rgn):
         cov[i] = covall[0][i] + covall[1][i] + covall[2][i]  + covall[3][i]
 
     if args.svlen is None:
-        print cov
+        print(cov)
     else:
         if len(cov) < args.svlen:
-            print "{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart, regionStart+1, sum(cov)/args.svlen)
+            print("{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart, regionStart+1, sum(cov)/args.svlen))
         else:
             wCov = sum(cov[0:args.svlen])
-            print "{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart, regionStart+1, wCov/float(args.svlen))
+            print("{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart, regionStart+1, wCov/float(args.svlen)))
             for i in range(1,len(cov)-args.svlen-1):
                 wCov-=cov[i-1]
                 wCov+=cov[i+args.svlen-1]
-                print "{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart+i, regionStart+i+1, wCov/float(args.svlen))
+                print("{}\t{}\t{}\t{:2.2f}".format(regionChrom, regionStart+i, regionStart+i+1, wCov/float(args.svlen)))
                 
 #    print "{:2.2f}".format(float(total)/len(cov))
 

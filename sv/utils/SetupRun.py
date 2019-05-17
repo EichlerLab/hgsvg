@@ -22,7 +22,7 @@ ap.add_argument("--slots", help="Number of slots to reserve", default=4,type=int
 
 
 if os.path.exists("config.json") == False:
-    print "ERROR. The file 'config.json' for tiled-meta assembly must exist."
+    print("ERROR. The file 'config.json' for tiled-meta assembly must exist.")
     sys.exit(1)
 
 args = ap.parse_args()

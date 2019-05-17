@@ -2,7 +2,7 @@
 
 import sys
 if len(sys.argv) != 3:
-    print "Usage: SplitGapsByHaplotype.py gaps.bed out_base"
+    print("Usage: SplitGapsByHaplotype.py gaps.bed out_base")
     sys.exit(0)
 gapsFile = open(sys.argv[1])
 h1Name = sys.argv[2] + ".1.bed"

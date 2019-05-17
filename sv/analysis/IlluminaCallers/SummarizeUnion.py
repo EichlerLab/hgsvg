@@ -59,11 +59,8 @@ def GetStats(valList):
         return "\t".join(valStrs)
 
 
-print "PB\t{}\t".format(len(pbv)) + GetStats(pbv)
-print "PB-unique\t{}\t".format(len(pbu)) + GetStats(pbu)
-print "IL\t{}\t".format(len(ilv)) + GetStats(ilv)
-print "IL-unique\t{}\t".format(len(ilu)) + GetStats(ilu)
-print "BN\t{}\t".format(len(bnv)) + GetStats(bnv)
-
-    
-        
+print("PB\t{}\t".format(len(pbv)) + GetStats(pbv))
+print("PB-unique\t{}\t".format(len(pbu)) + GetStats(pbu))
+print("IL\t{}\t".format(len(ilv)) + GetStats(ilv))
+print("IL-unique\t{}\t".format(len(ilu)) + GetStats(ilu))
+print( "BN\t{}\t".format(len(bnv)) + GetStats(bnv))

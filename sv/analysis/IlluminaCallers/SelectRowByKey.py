@@ -27,7 +27,7 @@ keyFile = open(args.keyFile)
 keyHeaderVals = keyFile.readline().split()
 keyHeader = {keyHeaderVals[i] : i for i in range(0,len(keyHeaderVals))}
 if args.keyColumn not in keyHeader:
-    print "ERROR, key file " + arg.keyFile + " is missing key column " + args.keyColumn
+    print("ERROR, key file " + args.keyFile + " is missing key column " + args.keyColumn)
     sys.exit(1)
 
 missingLine = "\t".join(["NA"]*len(dbHeaderVals)) + "\n"

@@ -4,15 +4,17 @@ import argparse
 from multiprocessing import Process, Lock, Semaphore, Pool
 import sys
 import subprocess
+import re
+
+from functools import cmp_to_key  # cmp_to_key Converts a python2 cmp comparator func. to a python3 key func.
 
 
-ap = argparse.ArgumentParser(description="Given an alignmetn bed file, run overlaps between contigs that are near each other")
+ap = argparse.ArgumentParser(description="Given an alignment bed file, run overlaps between contigs that are near each other")
 ap.add_argument("bed", help="Alignment bed file.")
 ap.add_argument("asm", help="Assemblies file")
 ap.add_argument("--chrom", help="Process this chromosome only.", default =None)
-ap.add_argument("--path", help="Path to HGSVG stitching scripts.",\
-                default="/net/eichler/vol5/home/mchaisso/projects/HGSVG/hgsvg/stitching")
-ap.add_argument("--ahead", help="Allow overlap betewen alignemnts ending this far ahead of current.",\
+ap.add_argument("--path", help="Path to HGSVG stitching scripts.")
+ap.add_argument("--ahead", help="Allow overlap between alignments ending this far ahead of current.",\
                 type=int, default=20000)
 ap.add_argument("--out", help="Output file.", default="/dev/stdout")
 ap.add_argument("--nproc", help="Number of processors.", default=1,type=int)
@@ -76,23 +78,55 @@ for i in range(1+firstTargetOffset,len(alignments)):
 
     
     n+=1
+
 if len(commands) == 0:
     outFile.close()
     sys.exit(0)
+
 #
 # Now process alignments
 #
+
+# Setup threads
 pool = Pool(args.nproc)
-ovps=[]
-res=pool.map_async(Run, commands, callback=ovps.append )
+ovps = []
+filt = []
+
+# Error handling overlap threads
+async_ex = None
+
+def thread_error(ex):
+    global async_ex
+    global pool
+
+    if async_ex is None:
+        async_ex = ex
+
+    pool.terminate()
+
+
+# Run
+res = pool.map_async(Run, commands, callback=ovps.append, error_callback=thread_error)
 
 res.wait((last-start)*1000)
-filt=[]
+
+if async_ex is not None:
+    raise async_ex
+
+
+# Finish overlaps
 def GetStarts(l):
-    vals=l.split()
-    v1=vals[0].split(":")[1].split("-")[0]
-    v2=vals[3].split(":")[1].split("-")[0]
-    return ((int(v1), int(v2)))
+    """
+    Get start position from record name.
+    """
+    vals = l.split()
+
+    #print('GetStarts({})'.format(l))
+
+    v1 = re.split('[:/]', vals[0])[1].split("-")[0]
+    v2 = re.split('[:/]', vals[3])[1].split("-")[0]
+
+    return int(v1), int(v2)
 
 
 def Compare(a,b):
@@ -103,12 +137,15 @@ def Compare(a,b):
     else:
         return sa[1] < sb[1]
 
+
 if len(ovps) > 0:
     for ovp in ovps[0]:
-        if ovp != "\n" and ovp != "":
+        ovp = ovp.decode().strip()
+
+        if ovp:
             filt.append(ovp)
     
-    filt.sort(cmp=Compare)
+    filt.sort(key=cmp_to_key(Compare))
 
     outFile.write("\n".join(filt)+"\n")
 else:

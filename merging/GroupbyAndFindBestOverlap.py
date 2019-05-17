@@ -55,7 +55,7 @@ def GroupSet(curSet):
         if curSet[i][args.svClass] not in check:
             continue
         svDist = int(curSet[i][args.svDist])
-        print "dist: " + str(svDist) + str(curSet[i][0:3]) + " sv: " + str(curSet[i][9:12])
+        print("dist: " + str(svDist) + str(curSet[i][0:3]) + " sv: " + str(curSet[i][9:12]))
         if svDist > args.maxSVDist:
             continue
         
@@ -92,9 +92,9 @@ for line in isectFile:
             res = grouped[8:11] + ["{:.2}".format(maxFrac)]    
             if args.svSeq:
                 res.append(grouped[args.svSeq])
-            print "\t".join(res)
+            print("\t".join(res))
         else:
-            print "\t".join(["."]*nFields)
+            print("\t".join(["."]*nFields))
         curSet = [vals]
     else:
         curSet.append(vals)
@@ -111,7 +111,6 @@ if grouped is not None:
     res = grouped[8:11] + ["{:.2}".format(maxFrac)]    
     if args.svSeq:
         res.append(grouped[args.svSeq])
-    print "\t".join(res)
+    print("\t".join(res))
 else:
-    print "\t".join(["."]*nFields)
-                    
+    print("\t".join(["."]*nFields))

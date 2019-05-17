@@ -1,0 +1,6 @@
+{
+	"grid_quad" : "qsub -l nodes=1:ppn=4 -l walltime=24:00:00,mem=4G",
+	"grid_small" : "qsub -l nodes=1:ppn=1 -l walltime=1:00:00,mem=1G",
+	"grid_large" : "qsub -l nodes=1:ppn=1 -l walltime=24:00:00,mem=12G",
+	"grid_manycore" : "qsub -l nodes=1:ppn=12 -l walltime=24:00:00,mem=24G",
+}

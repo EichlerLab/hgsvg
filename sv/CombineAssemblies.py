@@ -2,6 +2,8 @@
 import argparse
 import pysam
 import os
+import sys
+
 ap = argparse.ArgumentParser(description="Given a list of assembly sam files, print records into distinct sam files")
 ap.add_argument("--alignments", help="FOFN of alignments.")
 ap.add_argument("--header", help="Header to use.")

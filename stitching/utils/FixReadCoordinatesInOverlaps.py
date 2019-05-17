@@ -5,7 +5,7 @@ import pysam
 import Overlap
 import re
 if len(sys.argv) != 4:
-	print "usage: FixOverlaps.py overlaps.txt assemblies.fasta overlaps.out.txt"
+	print("usage: FixOverlaps.py overlaps.txt assemblies.fasta overlaps.out.txt")
 	sys.exit(0)
 
 overlaps = Overlap.ReadOverlapFile(sys.argv[1])

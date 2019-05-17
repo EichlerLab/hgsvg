@@ -59,7 +59,7 @@ def PatchPath(ovpQuery, asm, path):
     edge = (path[0], path[1])
     segments = []
     if edge not in ovpQuery:
-        print "ERROR, did not find an overlap in the path at 0"
+        print("ERROR, did not find an overlap in the path at 0")
         sys.exit(0)
 
     ovp = ovpQuery[edge]
@@ -68,7 +68,7 @@ def PatchPath(ovpQuery, asm, path):
     segmentEnd   = ovp.aMidOvp[1]
 #    segmentEnd   = ovp.aOvp[1]
 
-#    print ovp.a + "\t" + str(segmentStart) + "\t" + str(segmentEnd)
+#    print(ovp.a + "\t" + str(segmentStart) + "\t" + str(segmentEnd))
     seq = asm.fetch(reference=ovp.a, start=segmentStart, end=segmentEnd)
     # patch with N's to learn where the gap is
     seq = ReplaceN(seq, args.junctionN)
@@ -79,7 +79,7 @@ def PatchPath(ovpQuery, asm, path):
     for i in range(1, len(path)-1):
         prevOverlapEdge = (path[i-1], path[i])
         if prevOverlapEdge not in ovpQuery:
-            print "ERROR, did not find an overlap that is in the path at " + str(i)
+            print("ERROR, did not find an overlap that is in the path at " + str(i))
             sys.exit(0)
         #
         #  Given the overlaps, output the sequence in #'s. 

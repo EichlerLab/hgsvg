@@ -67,7 +67,7 @@ def GetEnd(sv):
         else:
             return sv.start+1
 
-def GetLength(v):
+def GetLength(sv):
     return sv.svLen
 
 

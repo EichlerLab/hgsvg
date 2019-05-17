@@ -78,7 +78,7 @@ for line in vcfFile:
                     indvOrder.append(samples[s])
                     
             if len(sampleIndex) == 0:
-                print "ERROR. Could not find sample " + args.indv
+                print("ERROR. Could not find sample " + args.indv)
                 sys.exit(1)
             
             sampleIndex= None
@@ -87,7 +87,7 @@ for line in vcfFile:
                     sampleIndex = s
                     break
             if sampleIndex is None:
-                print "ERROR. Could not find sample " + args.indv
+                print("ERROR. Could not find sample " + args.indv)
                 sys.exit(1)
             
     else:
