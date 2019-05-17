@@ -330,7 +330,7 @@ rule ReclassifyMergedNonredundant:
 """
 rule PBOnlyBed:
     input:
-        mnr=expand("{sample}.merged_nonredundant.{svtype}.bed",sample=config["sample"], svtype=svTypes)
+        mnr=[config["sample"] + ".merged_nonredundant_loci.DEL.bed", config["sample"] + ".merged_nonredundant.INS.bed"],
     output:
         pbb="pbonly.{sample}.bed"
     params:

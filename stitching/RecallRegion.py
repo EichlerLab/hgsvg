@@ -117,6 +117,7 @@ minRatio = 1.0
 gFile = tempfile.NamedTemporaryFile(dir=args.tmpdir, suffix=".bed", delete=False, mode='w')
 
 faiCommand="samtools faidx {}".format(rFile.name)
+
 subprocess.call(faiCommand.split())
 #gFile.close()
 pgCommand=scriptDir+"/../sv/utils/PrintGaps.py {} {} --outFile {} --condense 20 --maxMasked 10 ".format(rFile.name, sFile.name, gFile.name)
@@ -199,8 +200,7 @@ else:
     sys.stderr.write("input: " + str(args.ngaps) + " called " + str(nGaps) + "\n")
     sys.stderr.write(alnCommand)
 
-#import pdb
-#pdb.set_trace()
+
 if nGaps <= args.ngaps or args.gapLines is None:
     for gap in gaps.split("\n"):
         printGapLineVals = []

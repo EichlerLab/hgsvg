@@ -16,6 +16,7 @@ ap.add_argument("--minSVLen", help="Minimum size of variant to consider.", defau
 ap.add_argument("--out", help="Output file.", default="/dev/stdout")
 ap.add_argument("--nproc", help="Number of threads.", default=1,type=int)
 ap.add_argument("--op", help="Guide coverage by operation", default="DEL")
+ap.add_argument("--default", help="Default coverage if none is computed (e.g. for different SV type)",type=int,default=None)
 ap.add_argument("--bionano", help="Compute bionano estimage of coverage -- min coverage in window specified by svLen for deletions, and max for insertions", action="store_true", default="False")
 ap.add_argument("--writecov", help="Write coverae to this file.",default=None)
 ap.add_argument("--svlen", help="Specify column of svlen.",type=int,default=4)
@@ -60,6 +61,10 @@ def ProcessLine(line):
     regionEnd   = int(vals[2])
     #
     # Hack to get past bad biono calls where end=start
+    counter.value += 1    
+    if vals[h["svType"]] == "insertion" and args.op == "DEL" and args.default is not None:
+        return args.default
+    
     if regionEnd == regionStart:
         regionEnd=regionStart+1
     region = vals[0] + ":" + str(int(vals[1])-args.window) + "-" + str(int(vals[2])+args.window)
@@ -69,7 +74,7 @@ def ProcessLine(line):
     cov = [0]*(regionLength)
 
     sys.stderr.write("Getting coverage for " + str(int(counter.value)) + " of " + str(nsv) + "\t" + str(regionEnd - regionStart) + "\n")
-    counter.value += 1
+
     
     if len(blines) > 1 and vals[0] not in bamFileIndex:
         sys.stderr.write("Missing " + vals[0] + "\n")

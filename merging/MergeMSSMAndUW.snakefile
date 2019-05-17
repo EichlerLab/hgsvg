@@ -361,7 +361,6 @@ rule MakeMSSMSort:
 nf=`head -1 {input.mssm} | awk '{{ print NF;}}'`
 module unload anaconda; module unload python/3.5.2; module load python/2.7.3; module load bedtools/2.25.0; bedtools sort -header -i {input.mssm} | awk '{{ if (substr($0,0,1) == "#" || ($3-$2 >= 50 && $3-$2 < 500000)) print;}}' | bedtools groupby -g 1-3 -c 4 -o first -full -header | cut -f 1-$nf > {output.mssmSorted}
 """
-<<<<<<< HEAD
 rule DedupMSSM:
     input:
         sorted="{mssm}.sorted"
@@ -376,13 +375,6 @@ cat {input.sorted} | {params.sd}/../sv/utils/rmdup.py > {output.dedup}
 rule AnnotateMSSMClusters:
     input:
         sorted="{mssm}.sorted.dedup"
-=======
-
-
-rule AnnotateMSSMClusters:
-    input:
-        sorted="{mssm}.sorted"
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
     output:
         mssmClust="{mssm}.sorted.window_clusters"
     params:
@@ -434,11 +426,7 @@ ratioIndex=$(($nmssm+$nbm+3))
 ##
 rule SplitMSSM:
     input:
-<<<<<<< HEAD
         mssm="{mssm}.sorted.dedup"
-=======
-        mssm="{mssm}.sorted"
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
     output:
         split=dynamic("{mssm}.sorted.split/gaps.bed.{id}")
     params:
@@ -465,11 +453,7 @@ rule MakeMSSMSupport:
         ref=config["ref"],
         sd=SNAKEMAKE_DIR
     shell:"""
-<<<<<<< HEAD
 {params.sd}/../sv/utils/SpliceVariantsAndCoverageValidate.py  --gaps {input.mssm} --reads {input.reads} --out {output.cov} --nproc 1 --ref {params.ref} --tmpdir $TMPDIR --maxSize 50000 --flank 2000 --window 1000 --blasr {params.sd}/../blasr/alignment/bin/blasr
-=======
-{params.sd}/../sv/utils/SpliceVariantsAndCoverageValidate.py  --gaps {input.mssm} --reads {input.reads} --out {output.cov} --nproc 12 --ref {params.ref} --tmpdir $TMPDIR --maxSize 50000 --flank 2000 --window 1000 --blasr {params.sd}/../blasr/alignment/bin/blasr
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
 """
 
 ##
@@ -905,11 +889,7 @@ egrep "^#|{wildcards.op}" {input.sv} | \
 
 rule MakeMSSMBNAnnotation:
     input:
-<<<<<<< HEAD
         mssm="{base}.sorted.dedup",
-=======
-        mssm="{base}.sorted",
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
         bionano=config["bionano"]
     output:
         mssmBN="{base}.uw.bed.bn"
@@ -1050,12 +1030,8 @@ rule SummarizePacBioCovValidation:
         sge_opts=config["sge_small"],
         minPbSupport=config["pbSupport"],
         sample=config["sample"],
-<<<<<<< HEAD
         uw=config["uwsv"],
         sd=SNAKEMAKE_DIR        
-=======
-        uw=config["uwsv"]
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
     shell:"""
 nUW=`wc -l {params.uw} | awk '{{ print $1;}}'`
 nUWClust=`wc -l {params.uw}.cluster-count | awk '{{ print $1;}}' | awk '{{ print $1;}}'`
@@ -1075,11 +1051,7 @@ echo -e "MSSMh2\t$nMSSMH2\t$nMSSMH2Clust\t$nMSSMH2Pass" >> {output.clusterSummar
 nMSSMDN=`wc -l {params.sample}.remainingdenovos.bed.uw.bed | awk '{{ print $1;}}' `
 nMSSMDNClust=`wc -l {params.sample}.remainingdenovos.bed.uw.cluster-count | awk '{{ print $1;}}' `
 
-<<<<<<< HEAD
-
-=======
 Rscript {params.sd}/../plotting/plot_inheritance.R --inh {input.merge} --sample {params.sample} --pal {params.pal}
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
 """
 
 rule SummarizeInheritance:
@@ -1262,7 +1234,6 @@ rule MergeCallsets:
 
 {params.sd}/SelectBestBNKey.py -a {input.uw} -b {input.mssm}
 # Remove MSSM calls that have best overlap with bionano from UW. This is the UW callset.
-<<<<<<< HEAD
 cat {input.mssm}.bnselect | bioawk -c hdr '{{ if ($bnstatus == "BN_KEEP") print $0; }}' > {input.mssm}.keep
     
 cat {input.uw}.bnselect | bioawk -c hdr '{{ if ($bnstatus != "BN_OTHER") print;}}' > {input.uw}.no_mssm
@@ -1274,23 +1245,11 @@ bedtools closest -header -d -t first -a {input.uw}.no_mssm -b {input.mssm}.keep 
 
 # Now for the MSSM calls, select either: BN_KEEP, or distToUW > minDist
 paste {input.mssm}.bnselect {input.uwDist} | \
-=======
-paste {input.mssm} {input.bnFile[1]} | bioawk -c hdr '{{ if ($bnstatus == "BN_KEEP") print $0; }}' > {input.mssm}.keep
-    
-cat {input.uw} | bioawk -c hdr '{{ if ($bnstatus != "BN_OTHER") print;}}' > {input.uw}.no_mssm
-
-# Now for the MSSM calls, select either: BN_KEEP, or distToUW > minDist
-paste {input.mssm} {input.bnFile[1]} {input.uwDist} | \
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
   bioawk -c hdr '{{ if ((substr($0,0,1) == "#") || \
     ($distToUW > {params.minDist} || $bnstatus == "BN_KEEP")) print; }}' > {input.mssm}.far_from_uw.bed
 
 
-<<<<<<< HEAD
 {SNAKEMAKE_DIR}/../sv/utils/MergeFiles.py --files  {input.mssm}.far_from_uw.bed {input.uw}.far_from_mssm_keep --out /dev/stdout | bedtools sort -header > {output.merged}
-=======
-{SNAKEMAKE_DIR}/../sv/utils/MergeFiles.py --files  {input.mssm}.far_from_uw.bed {input.uw}.no_mssm --out /dev/stdout | bedtools sort -header > {output.merged}
->>>>>>> 41b294906ac6a16361dc998661faaeb5d4fe279b
 """
 
 

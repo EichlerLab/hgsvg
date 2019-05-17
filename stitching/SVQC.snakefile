@@ -62,6 +62,7 @@ rule all:
         fillInDiploid="fill-in/diploid/sv_calls.bed.support", 
         fillInComb=expand("fill-in/hap{hap}/comb.bed",hap=haps),
         fillInFiltVCCF=expand("fill-in/hap{hap}/"+config["sample"]+".hap{hap}.vcf",hap=haps),
+        fillInFiltVCCFGZ=expand("fill-in/hap{hap}/"+config["sample"]+".hap{hap}.vcf.gz",hap=haps),
         dipTrClusters=gapdir+"/dip_tr_clusters.bed",
         dipAllTrClusters=gapdir+"/dip_tr_clusters.bed.all",        
         reCalled=expand("{gapdir}/hap{hap}/gaps.recalled",gapdir=gapdir,hap=haps),
@@ -100,8 +101,9 @@ rule HapSVCov:
         grid_opts=config["grid_large"],
         sd=SNAKEMAKE_DIR,
         fofn=config["bams"],
+        depth=config["depth"]
     shell:"""
-{params.sd}/../sv/utils/SVCoverage.py --fofn {params.fofn} --calls {input.calls} --out {output.svCoverage} --nproc 1  --op DEL  --header --window 1000
+{params.sd}/../sv/utils/SVCoverage.py --fofn {params.fofn} --calls {input.calls} --out {output.svCoverage} --nproc 1  --op DEL  --header --window 1000 --default {params.depth}
 """
 
 rule FillInHapSVCov:
@@ -113,8 +115,9 @@ rule FillInHapSVCov:
         grid_opts=config["grid_large"],
         sd=SNAKEMAKE_DIR,
         fofn=config["bams"],
+        depth=config["depth"]
     shell:"""
-{params.sd}/../sv/utils/SVCoverage.py --fofn {params.fofn} --calls {input.calls} --out {output.svCoverage} --nproc 1  --op DEL --header --window 1000
+{params.sd}/../sv/utils/SVCoverage.py --fofn {params.fofn} --calls {input.calls} --out {output.svCoverage} --nproc 1  --op DEL --header --window 1000 --default {params.depth}
 """
 
 
@@ -162,6 +165,19 @@ rule CombinedHapsToVCF:
     shell:"""
 {SNAKEMAKE_DIR}/../sv/utils/variants_bed_to_vcf.py --bed {input.filt} --ref {params.ref} --sample {params.sample} --type sv --seq --vcf /dev/stdout --fields NALT nAlt NREF nRef | bedtools sort -header > {output.vcf}
 
+"""
+
+rule IndexHapVCF:
+    input:
+        vcf="fill-in/hap{hap}/"+config["sample"]+".hap{hap}.vcf"
+    output:
+        gz="fill-in/hap{hap}/"+config["sample"]+".hap{hap}.vcf.gz",
+    params:
+        grid_opts=config["grid_small"],
+        sd=SNAKEMAKE_DIR,
+    shell:"""
+bgzip -c {input.vcf} > {output.gz}
+tabix {output.gz}
 """
 
 rule CreateClusterCalls:
@@ -270,7 +286,7 @@ rule RecallGaps:
 mkdir -p {params.gapdir}/hap{wildcards.hap};
 mkdir -p {params.gapdir}/hap{wildcards.hap}/indels;
 if [ {params.do_recall} == "yes" ]; then
-  {params.sd}/RecallRegionsInGapBed.py --asm {input.asm} --ref {params.ref} --gaps {input.gaps} --out {output.recalled} --nproc 12 --refRegions {params.gapdir}/hap{wildcards.hap}/split/regions.recalled.ref.{wildcards.id} --ngmlr {params.ngmlr_cutoff} --indels {output.recalled}.indel.bed --indelDir {params.gapdir}/hap{wildcards.hap}/indels --blasr {params.sd}/../blasr/alignment/bin/blasr
+  {params.sd}/RecallRegionsInGapBed.py --asm {input.asm} --ref {params.ref} --gaps {input.gaps} --out {output.recalled} --nproc 2 --refRegions {params.gapdir}/hap{wildcards.hap}/split/regions.recalled.ref.{wildcards.id} --ngmlr {params.ngmlr_cutoff} --indels {output.recalled}.indel.bed --indelDir {params.gapdir}/hap{wildcards.hap}/indels --blasr {params.sd}/../blasr/alignment/bin/blasr
 else
   cp {input.gaps} {output.recalled}
   touch {output.refRegions}

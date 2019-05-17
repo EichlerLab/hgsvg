@@ -3,7 +3,7 @@ options <- matrix(c("sv", "v", 2, "character",
                     "count", "c", 2, "character",
                     "operation", "o", "op", "character",
                     "sample", "s", 2, "character"), byrow=T, ncol=4)
-
+LABELSIZE=5
 args <- getopt(options)
                                         #
 #setwd("/net/eichler/vol24/projects/structural_variation/nobackups/projects/HGSVG/analysis/IlluminaCombined/HG00514")
@@ -46,9 +46,9 @@ pcaSummary <- summary(tpca)
 require(gridExtra)
 pdf(sprintf("MethodPCA.%s.%s.pdf", args$operation, args$sample,sep=""), width=12,height=6)
 
-p1 <- ggplot(pcaDF, aes(x=c1,y=c2)) + geom_point(color = 'black') + geom_text_repel(aes(label = tabNames))  + xlab(sprintf("PC 1 %2.2f%% variance ",100*pcaSummary$importance[2,1]) ) + ylab(sprintf("PC 2 %2.2f%% variance ", 100*pcaSummary$importance[2,2])) + labs(title=sprintf("%s, Illumina combined %s", args$sample, args$operation)) + theme_bw()
+p1 <- ggplot(pcaDF, aes(x=c1,y=c2)) + geom_point(color = 'black') + geom_text_repel(aes(label = tabNames),size=LABELSIZE)  + xlab(sprintf("PC 1 %2.2f%% variance ",100*pcaSummary$importance[2,1]) ) + ylab(sprintf("PC 2 %2.2f%% variance ", 100*pcaSummary$importance[2,2])) + labs(title=sprintf("%s, Illumina combined %s", args$sample, args$operation)) + theme_bw()
 
-p2 <- ggplot(pcaDF, aes(x=c2,y=c3)) + geom_point(color = 'black') + geom_text_repel(aes(label = tabNames))  + xlab(sprintf("PC 2 %2.2f%% variance ",100*pcaSummary$importance[2,2]) ) + ylab(sprintf("PC 3 %2.2f%% variance ", 100*pcaSummary$importance[2,3])) + labs(title=sprintf("%s, Illumina combined %s", args$sample, args$operation)) + theme_bw()
+p2 <- ggplot(pcaDF, aes(x=c2,y=c3)) + geom_point(color = 'black') + geom_text_repel(aes(label = tabNames),size=LABELSIZE)  + xlab(sprintf("PC 2 %2.2f%% variance ",100*pcaSummary$importance[2,2]) ) + ylab(sprintf("PC 3 %2.2f%% variance ", 100*pcaSummary$importance[2,3])) + labs(title=sprintf("%s, Illumina combined %s", args$sample, args$operation)) + theme_bw()
 
 grid.arrange(p1,p2,ncol=2)
 

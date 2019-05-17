@@ -13,18 +13,29 @@ def calculate_variant_quality(variant):
     except ZeroDivisionError:
         return 0
 
-def GetGenotype(gt):
-    if gt == "HAP0":
-        return "1|0"
-    elif gt == "HAP1":
-        return "0|1"
-    elif gt == "HOM":
-        return "1|1"
-    elif gt == "HET":
-        # unphased
-        return "1/0"
+def GetGenotype(gt, svtype="sv"):
+    if svtype == "INS" or svtype == "DEL":
+        if gt == "HAP0":
+            return "1|0"
+        elif gt == "HAP1":
+            return "0|1"
+        elif gt == "HOM":
+            return "1|1"
+        elif gt == "HET":
+            # unphased
+            return "1/0"
+        else:
+            return "./."
+    elif svtype == "locus":
+        if gt == "HOM":
+            return "1|2"
+        elif gt == "HAP0":
+            return "1|0"
+        elif gt == "HAP1":
+            return "0|1"
+        else:
+            return "1/1"        
     else:
-        # assume unphased homozygous
         return "1/1"
 
 
@@ -40,6 +51,12 @@ def GetType(val):
         return val[0:3].upper()
     else:
         return "NONE"
+
+def GetSVEnd(sv_type, t_start):
+    if sv_type == "INS":
+        return str(t_start)
+    else:
+        return str(int(t_start)+1)
 
 def GetPass(val):
     if val > 3:
@@ -156,10 +173,12 @@ def convert_bed_to_vcf(bed_filename, reference_filename, vcf_filename, sample, v
     # Build an INFO field for each call.
     calls["svShort"] = calls.apply(lambda row: GetType(row["svType"]), axis=1)
     
-
+    
     
     if variant_type == "sv":
-        infoKeys= [("END", "tEnd"),("SVTYPE", "svShort"),("SVLEN", "svLen"),("CONTIG", "qName"),("CONTIG_START", "qStart"),("CONTIG_END", "qEnd"),("SEQ", "svSeq")]
+        calls["svEnd"] = calls.apply(lambda row: GetSVEnd(row["svShort"], row["tStart"]), axis=1)
+        
+        infoKeys = [("END", "svEnd"),("SVTYPE", "svShort"),("SVLEN", "svLen"),("CONTIG", "qName"),("CONTIG_START", "qStart"),("CONTIG_END", "qEnd"),("SEQ", "svSeq")]
         if "is_trf" in calls:
             infoKeys.append(("IS_TRF", "is_trf"))
 
@@ -191,7 +210,7 @@ def convert_bed_to_vcf(bed_filename, reference_filename, vcf_filename, sample, v
         calls["svLen"] = calls.apply(lambda row: ParseSVLen(row["svLen"]), axis=1)
         calls["format"] = ":".join(fmt)
         if "hap" in calls:
-            calls["genotype"] = calls.apply(lambda row: GetGenotype(row.hap), axis=1)
+            calls["genotype"] = calls.apply(lambda row: GetGenotype(row.hap, row.svType), axis=1)
         else:
             calls["genotype"] = ["./."]* len(calls["tEnd"])
         
@@ -201,7 +220,7 @@ def convert_bed_to_vcf(bed_filename, reference_filename, vcf_filename, sample, v
         calls["format"] = ":".join(fmt)
         
         if "hap" in calls:
-            calls["genotype"] = calls.apply(lambda row: GetGenotype(row.hap), axis=1)
+            calls["genotype"] = calls.apply(lambda row: GetGenotype(row.hap, row.svType), axis=1)
         else:
             calls["genotype"] = ["./."]* len(calls["tEnd"])
         calls["svLen"] =  calls.apply(lambda row: GetSVLen(row), axis=1)        
